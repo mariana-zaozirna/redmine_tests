@@ -1,0 +1,23 @@
+{
+  "name": "redmine_playwright",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:debug": "playwright test --headed",
+    "test": "playwright test",
+    "allure:test": "playwright test --reporter=line,allure-playwright",
+    "allure:generate": "allure generate ./allure-results --clean",
+    "allure:open": "allure open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@faker-js/faker": "^8.2.0",
+    "@playwright/test": "^1.39.0",
+    "@types/node": "^20.8.8",
+    "allure-commandline": "^2.24.1",
+    "allure-playwright": "^2.9.2"
+  }
+}
