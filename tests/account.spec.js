@@ -1,15 +1,54 @@
-const { test } = require('@playwright/test')
+const { test, expect } = require('@playwright/test')
 const { MyAccountPage } = require('../pages/myAccountPage.js')
 const { MyPasswordPage } = require('../pages/myPassword.js')
 const { LoginHelper } = require('../helpers/loginHelper.js')
 const { ChangePasswordHelper } = require('../helpers/changePasswordHelper.js')
 const { editAccount, accountToEdit } = require('../helpers/testDataHelper.js')
 
-let myAccountPage
-let myPasswordPage
-let loginHelper
+test.describe('Account', () => {
+  let myAccountPage
+  let myPasswordPage
+  let loginHelper
+  
+  test.beforeEach(async ({ page }) => {
+    myAccountPage = new MyAccountPage(page)
+    myPasswordPage = new MyPasswordPage(page)
+
+    loginHelper = new LoginHelper(page)
+    await loginHelper.login()
+    await myAccountPage.open()
+    await page.waitForLoadState()
+    await myAccountPage.handleVignette()
+  })
+
+  test('TC_3: Editing My Account', async () => {
+    const filledData = await myAccountPage.fillFormData()
+    await myAccountPage.selectLanguage(editAccount.newLanguage)
+    await myAccountPage.clickSaveBtn()
+    await expect(await myAccountPage.getSuccessMsgInUK()).toBeVisible()
+    await expect(await myAccountPage.getSuccessMsgInUK()).toHaveText(
+      'Обліковий запис успішно оновлений.'
+    )
+    expect(filledData.firstName).toBe(
+      await myAccountPage.getFirstNameInputValue()
+    )
+    expect(filledData.lastName).toBe(
+      await myAccountPage.getLastNameInputValue()
+    )
+    expect(filledData.nickName).toBe(await myAccountPage.getNickInputValue())
+  })
+
+  test.afterEach(async () => {
+    await myAccountPage.selectLanguage(editAccount.language)
+    await myAccountPage.clickSaveBtn()
+  })
+})
 
 test.describe('Account', () => {
+  let myAccountPage
+  let myPasswordPage
+  let loginHelper
+
   test.beforeEach(async ({ page }) => {
     myAccountPage = new MyAccountPage(page)
     myPasswordPage = new MyPasswordPage(page)
@@ -25,19 +64,7 @@ test.describe('Account', () => {
     await myAccountPage.handleVignette()
   })
 
-  test('TC_3: Editing My Account', async () => {
-    let filledData = await myAccountPage.fillFormData()
-    await myAccountPage.selectLanguage(editAccount.newLanguage)
-    await myAccountPage.clickSaveBtn()
-    await myAccountPage.ensureDisplayedSuccesMsgInUa()
-    await myAccountPage.verifySavedData(filledData)
-
-    //postcondition
-    await myAccountPage.selectLanguage(editAccount.language)
-    await myAccountPage.clickSaveBtn()
-  })
-
-  test('TC_4: Password changing', async ({ page }) => {
+  test('TC_4: Password changing', async () => {
     await myAccountPage.clickChangePswdBtn()
     await myPasswordPage.handleVignette()
     await myPasswordPage.ensureOnPage()
@@ -54,8 +81,9 @@ test.describe('Account', () => {
       accountToEdit.login,
       editAccount.newPassword
     )
+  })
 
-    //postcondition
+  test.afterEach(async ({ page }) => {
     await new ChangePasswordHelper(page).changePassword(
       editAccount.newPassword,
       accountToEdit.password

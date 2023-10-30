@@ -13,9 +13,9 @@ const logoutBtn = '//a[@class="logout"]'
 
 class MyAccountPage extends Page {
   path = 'my/account'
+
   constructor (page) {
     super(page)
-    this.page = page
   }
 
   async open () {
@@ -40,17 +40,15 @@ class MyAccountPage extends Page {
     return fakerData
   }
 
-  async verifySavedData (data) {
-    const actualFirstName = await (
-      await super.getElement(firstNameInput)
-    ).inputValue()
-    const actualLastName = await (
-      await super.getElement(lastNameInput)
-    ).inputValue()
-    const actualNick = await (await super.getElement(nick)).inputValue()
-    expect(data.firstName).toBe(actualFirstName)
-    expect(data.lastName).toBe(actualLastName)
-    expect(data.nickName).toBe(actualNick)
+  async getFirstNameInputValue () {
+    return (await super.getElement(firstNameInput)).inputValue()
+  }
+
+  async getLastNameInputValue () {
+    return (await super.getElement(lastNameInput)).inputValue()
+  }
+  async getNickInputValue () {
+    return (await super.getElement(nick)).inputValue()
   }
 
   async selectLanguage (lang) {
@@ -62,11 +60,8 @@ class MyAccountPage extends Page {
     await super.clickElement(saveBtn)
   }
 
-  async ensureDisplayedSuccesMsgInUa () {
-    const msg = await super.getElement(successMsg)
-    await msg.isVisible()
-    await expect(msg).toBeVisible()
-    await expect(msg).toHaveText('Обліковий запис успішно оновлений.')
+  async getSuccessMsgInUK () {
+    return super.getElement(successMsg)
   }
 
   async clickChangePswdBtn () {

@@ -1,4 +1,4 @@
-const { test } = require('@playwright/test')
+const { test, expect } = require('@playwright/test')
 const { LoginPage } = require('../pages/loginPage.js')
 const { MyPage } = require('../pages/myPage.js')
 const { account } = require('../helpers/testDataHelper.js')
@@ -15,17 +15,26 @@ test.describe('Login', () => {
 
   test('TC_1:Sign in with valid credentials', async () => {
     await loginPage.login(account.login, account.password)
-    await loginPage.checkingPswdType()
+    await expect(await loginPage.getPasswordType()).toHaveAttribute(
+      'type',
+      'password'
+    )
     await loginPage.clickLoginBtn()
     await myPage.ensureOnPage()
-    await myPage.isMyAccountBtnVisible()
-    await myPage.isLogoutBtnVisible()
+    await expect(await myPage.getMyAccountBtn()).toBeVisible()
+    await expect(await myPage.getLogoutBtn()).toBeVisible()
   })
 
   test('TC_2:Sign in with invalid "Password" field', async () => {
     await loginPage.login(account.login, faker.internet.password())
-    await loginPage.checkingPswdType()
+    await expect(await loginPage.getPasswordType()).toHaveAttribute(
+      'type',
+      'password'
+    )
     await loginPage.clickLoginBtn()
-    await loginPage.ensureErrorMsgVisible()
+    await expect(await loginPage.getErrorMsg()).toBeVisible()
+    await expect(await loginPage.getErrorMsg()).toHaveText(
+      'Invalid user or password'
+    )
   })
 })

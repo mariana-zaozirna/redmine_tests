@@ -3,10 +3,10 @@ const jsonFileAccount = 'environments/account.json'
 const jsonFileEditAccount = 'environments/editAccount.json'
 const jsonFileAccountToEdit = 'environments/accountToEdit.json'
 
-const jsonAccount = fs.readFileSync(jsonFileAccount, 'utf-8')
-const jsonDataEditAccount = fs.readFileSync(jsonFileEditAccount, 'utf-8')
-const jsonDataAccountToEdit = fs.readFileSync(jsonFileAccountToEdit, 'utf-8')
+module.exports.account = readFile(jsonFileAccount)
+module.exports.editAccount = readFile(jsonFileEditAccount)
+module.exports.accountToEdit = readFile(jsonFileAccountToEdit)
 
-module.exports.account = JSON.parse(jsonAccount)
-module.exports.editAccount = JSON.parse(jsonDataEditAccount)
-module.exports.accountToEdit = JSON.parse(jsonDataAccountToEdit)
+function readFile (path) {
+  return JSON.parse(fs.readFileSync(path, 'utf-8'))
+}

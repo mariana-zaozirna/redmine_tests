@@ -9,17 +9,18 @@ class MyPasswordPage extends Page {
 
   constructor (page) {
     super(page)
-    this.page = page
   }
 
   async ensureOnPage () {
     await super.ensureOnPage(this.path)
   }
+
   async fillPswdChangingField (password, newPassword, confirmation) {
     await super.fillInputField(passwordField, password)
     await super.fillInputField(newPasswordField, newPassword)
     await super.fillInputField(confirmationPassword, confirmation)
   }
+
   async clickApplyBtn () {
     await super.clickElement(applyBtn)
   }
@@ -28,4 +29,5 @@ class MyPasswordPage extends Page {
     super.handleVignette(this.path)
   }
 }
+
 module.exports = { MyPasswordPage }

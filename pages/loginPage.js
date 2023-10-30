@@ -1,4 +1,3 @@
-const { expect } = require('@playwright/test')
 const { Page } = require('./page.js')
 const userNameInput = '//input[@id="username"]'
 const passwordInput = '//input[@id="password"]'
@@ -24,16 +23,12 @@ class LoginPage extends Page {
     await super.clickElement(loginBtn)
   }
 
-  async checkingPswdType () {
-    const passwordField = await super.getElement(passwordInput)
-    await expect(passwordField).toHaveAttribute('type', 'password')
+  async getPasswordType () {
+    return super.getElement(passwordInput)
   }
 
-  async ensureErrorMsgVisible () {
-    const errorMessage = await super.getElement(errorMsg)
-    await errorMessage.isVisible()
-    await expect(errorMessage).toBeVisible()
-    await expect(errorMessage).toHaveText('Invalid user or password')
+  async getErrorMsg () {
+    return super.getElement(errorMsg)
   }
 }
 
